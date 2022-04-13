@@ -1,6 +1,6 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
 import { Message } from 'discord.js';
-import { Module } from '../modules';
+import { ContextMenuCommand, Module, SlashCommand } from '../modules';
 
 export default {
 	commands: [
@@ -17,6 +17,14 @@ export default {
 						}
 					});
 			},
-		},
+		} as SlashCommand,
+		{
+			data: new ContextMenuCommandBuilder()
+				.setName('Ping')
+				.setType(2),
+			execute(interaction) {
+				interaction.reply('🏓 Pong, !');
+			},
+		} as ContextMenuCommand,
 	],
 } as Module;

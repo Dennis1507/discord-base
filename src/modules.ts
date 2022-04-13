@@ -1,5 +1,5 @@
-import { ClientEvents, CommandInteraction } from 'discord.js';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { ClientEvents, CommandInteraction, ContextMenuInteraction } from 'discord.js';
+import { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 import { EnhancedClient } from '.';
@@ -7,13 +7,18 @@ import fs from 'fs';
 
 
 export interface Module {
-	commands?: Array<Command>;
+	commands?: Array<SlashCommand|ContextMenuCommand>;
 	events?: Array<Event>;
 }
 
-interface Command {
+export interface SlashCommand {
 	data: SlashCommandBuilder;
 	execute: (arg0: CommandInteraction) => void;
+}
+
+export interface ContextMenuCommand {
+	data: ContextMenuCommandBuilder;
+	execute: (arg0: ContextMenuInteraction) => void;
 }
 
 interface Event {
@@ -33,9 +38,18 @@ export async function loadModules(path: string, client: EnhancedClient) {
 
 			/* Load commands. */
 			if (commands) {
-				commands.forEach((command: Command) => {
+				commands.forEach((command: SlashCommand|ContextMenuCommand) => {
 					data.push(command.data.toJSON());
-					client.commands.set(command.data.name, command.execute);
+
+					/* Command Type 2 is a Context Menu User Command.
+					 * Command Type 3 is a Context Menu Message Command.
+					 * Slash Commands do not have a type variable. */
+
+					switch(command.data.toJSON().type) {
+					case 2: client.usercommands.set(command.data.name, command.execute); break;
+					case 3: client.messagecommands.set(command.data.name, command.execute); break;
+					default: client.commands.set(command.data.name, command.execute); break;
+					}
 				});
 			}
 
