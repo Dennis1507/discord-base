@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { Message } from 'discord.js';
 import { Module } from '../modules';
 
-export const module: Module = {
+export default {
 	commands: [
 		{
 			data: new SlashCommandBuilder()
@@ -19,4 +19,4 @@ export const module: Module = {
 			},
 		},
 	],
-};
+} as Module;

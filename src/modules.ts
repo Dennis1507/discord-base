@@ -25,23 +25,32 @@ interface Event {
 export async function loadModules(path: string, client: EnhancedClient) {
 	if (!client.user) return console.error('Client user is not defined.');
 	const data: {}[] = [];
+
+	/* Read in all module files. */
 	for (const file of fs.readdirSync('./src/' + path)) {
 		if (file.endsWith('.ts') || file.endsWith('.js')) {
-			const { module } = await import(`./${path}/${file}`);
-			if (module.commands) {
-				module.commands.forEach((command: Command) => {
+			const { commands, events } = (await import(`./${path}/${file}`)).default;
+
+			/* Load commands. */
+			if (commands) {
+				commands.forEach((command: Command) => {
 					data.push(command.data.toJSON());
 					client.commands.set(command.data.name, command.execute);
 				});
 			}
-			if (module.events) {
-				module.events.forEach((event: Event) => {
+
+			/* Load events. */
+			if (events) {
+				events.forEach((event: Event) => {
 					if (event.once) client.once(event.event, event.execute);
 					else client.on(event.event, event.execute);
 				});
 			}
+
 		}
 		else {
+
+			/* Recursively load subdirectories. */
 			fs.stat(`./src/${path}/${file}`, (err, stats) => {
 				if (err) return console.error(err);
 				if (stats.isDirectory()) loadModules(`${path}/${file}`, client);
@@ -52,6 +61,8 @@ export async function loadModules(path: string, client: EnhancedClient) {
 	const rest = new REST({ version: '9' }).setToken(client.config.token);
 
 	if (client.config.dev) {
+
+		/* Update commands on given dev server. */
 		await rest.put(
 			Routes.applicationGuildCommands(client.user.id, client.config.dev),
 			{ body: data }
@@ -59,6 +70,8 @@ export async function loadModules(path: string, client: EnhancedClient) {
 		console.log('Successfully updated commands on dev server.');
 	}
 	else {
+
+		/* Update commands globally. */
 		await rest.put(
 			Routes.applicationCommands(client.user.id),
 			{ body: data }

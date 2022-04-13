@@ -1,6 +1,6 @@
 import { Client, ClientOptions, Collection, Intents } from 'discord.js';
-import config from '../config.json';
 import { loadModules } from './modules';
+import config from '../config.json';
 
 export class EnhancedClient extends Client {
 	public commands: Collection<string, (...args: any[]) => void> = new Collection();
@@ -8,10 +8,8 @@ export class EnhancedClient extends Client {
 
 	public constructor(options: ClientOptions) {
 		super(options);
+		this.once('ready', () => loadModules('modules', this));
 		this.login(config.token);
-		this.once('ready', () => {
-			loadModules('modules', this);
-		});
 	}
 }
 
