@@ -1,6 +1,6 @@
 import { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
 import { Message } from 'discord.js';
-import { ContextMenuCommand, Module, SlashCommand } from '../modules';
+import { Module, SlashCommand, UserMenuCommand } from '../interfaces';
 
 export default {
 	commands: [
@@ -23,8 +23,8 @@ export default {
 				.setName('Ping')
 				.setType(2),
 			execute(interaction) {
-				interaction.reply('🏓 Pong, !');
+				interaction.reply(`🏓 Pong, <@${interaction.targetId}>!`);
 			},
-		} as ContextMenuCommand,
+		} as UserMenuCommand,
 	],
 } as Module;

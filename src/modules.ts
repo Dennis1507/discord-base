@@ -1,31 +1,10 @@
-import { ClientEvents, CommandInteraction, ContextMenuInteraction } from 'discord.js';
-import { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 import { EnhancedClient } from '.';
+import { Command, Event } from './interfaces';
 import fs from 'fs';
 
-
-export interface Module {
-	commands?: Array<SlashCommand|ContextMenuCommand>;
-	events?: Array<Event>;
-}
-
-export interface SlashCommand {
-	data: SlashCommandBuilder;
-	execute: (arg0: CommandInteraction) => void;
-}
-
-export interface ContextMenuCommand {
-	data: ContextMenuCommandBuilder;
-	execute: (arg0: ContextMenuInteraction) => void;
-}
-
-interface Event {
-	event: keyof ClientEvents;
-	once?: boolean;
-	execute: (...args: any[]) => void;
-}
 
 export async function loadModules(path: string, client: EnhancedClient) {
 	if (!client.user) return console.error('Client user is not defined.');
@@ -38,18 +17,17 @@ export async function loadModules(path: string, client: EnhancedClient) {
 
 			/* Load commands. */
 			if (commands) {
-				commands.forEach((command: SlashCommand|ContextMenuCommand) => {
+				commands.forEach((command: Command) => {
 					data.push(command.data.toJSON());
 
 					/* Command Type 2 is a Context Menu User Command.
 					 * Command Type 3 is a Context Menu Message Command.
 					 * Slash Commands do not have a type variable. */
 
-					switch(command.data.toJSON().type) {
-					case 2: client.usercommands.set(command.data.name, command.execute); break;
-					case 3: client.messagecommands.set(command.data.name, command.execute); break;
-					default: client.commands.set(command.data.name, command.execute); break;
-					}
+					if (command.data instanceof SlashCommandBuilder) {client.commands.set(command.data.name, command.execute);}
+					else if (command.data.type === 2) {client.usercommands.set(command.data.name, command.execute);}
+					else {client.messagecommands.set(command.data.name, command.execute);}
+
 				});
 			}
 
