@@ -1,15 +1,19 @@
 import { Client, ClientOptions, Collection, Intents } from 'discord.js';
 import { loadModules } from './modules';
+import { database } from './database/database';
 import config from '../config.json';
+import { Model } from 'mongoose';
 
 export class EnhancedClient extends Client {
 	public commands: Collection<string, (...args: any[]) => void> = new Collection();
 	public usercommands: Collection<string, (...args: any[]) => void> = new Collection();
 	public messagecommands: Collection<string, (...args: any[]) => void> = new Collection();
 	public config: Record<string, string> = config;
+	public data: Collection<string, Model<any>> = new Collection();
 
 	public constructor(options: ClientOptions) {
 		super(options);
+		database(this, config);
 		this.once('ready', () => loadModules('modules', this));
 		this.login(config.token);
 	}
