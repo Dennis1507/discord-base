@@ -2,6 +2,7 @@ import { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/build
 import { Message } from 'discord.js';
 import { EnhancedClient } from '..';
 import { Module, SlashCommand, UserMenuCommand } from '../interfaces';
+import { getLang } from '../lang/lang';
 
 export default {
 	commands: [
@@ -14,7 +15,7 @@ export default {
 					.then(async reply => {
 						if (reply instanceof Message) {
 							const ping = reply.createdTimestamp - interaction.createdTimestamp;
-							await interaction.editReply(`🏓 Pong! ${ping}ms. API Latency ${interaction.client.ws.ping}ms.`);
+							await interaction.editReply(await getLang(interaction.locale, 'R_PING_PONG', ping.toString(), interaction.client.ws.ping.toString()));
 						}
 					});
 			},
@@ -29,7 +30,7 @@ export default {
 					const pings = (await interaction.client.data.get('ping')?.findOne({ '_id': interaction.targetId }))?.pings || 0;
 					await interaction.client.data.get('ping')?.findOneAndUpdate({ '_id': interaction.targetId }, { pings: pings + 1 }, { upsert: true });
 				}
-				interaction.editReply(`🏓 Pong, <@${interaction.targetId}>!`);
+				interaction.editReply(await getLang(interaction.locale, 'R_PING_PONG2', interaction.targetId));
 			},
 		} as UserMenuCommand,
 	],

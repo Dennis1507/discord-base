@@ -3,6 +3,7 @@ import { loadModules } from './modules';
 import { database } from './database/database';
 import config from '../config.json';
 import { Model } from 'mongoose';
+import { getLang } from './lang/lang';
 
 export class EnhancedClient extends Client {
 	public commands: Collection<string, (...args: any[]) => void> = new Collection();
@@ -28,5 +29,5 @@ client.on('interactionCreate', async interaction => {
 	else if (interaction.isMessageContextMenu()) { command = client.messagecommands.get(interaction.commandName); }
 	else { return; }
 	if (command) command(interaction);
-	else interaction.reply({ content: 'Unknown command.', ephemeral: true });
+	else interaction.reply({ content: await getLang(interaction.locale, 'R_UNKNOWN_COMMAND'), ephemeral: true });
 });
