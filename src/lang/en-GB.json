@@ -1,0 +1,5 @@
+{
+    "R_UNKNOWN_COMMAND": "Unknown command.",
+    "R_PING_PONG": "🏓 Pong! $_ms. API Latency $_ms.",
+    "R_PING_PONG2": "🏓 Pong, <@$_>!"
+}
