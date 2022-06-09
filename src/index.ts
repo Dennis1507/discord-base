@@ -1,5 +1,5 @@
 import { Client, ClientOptions, Collection, Intents } from 'discord.js';
-import { loadModules } from './modules';
+import { loadFeatures } from './features';
 import { database } from './database/database';
 import config from '../config.json';
 import { Model } from 'mongoose';
@@ -15,7 +15,7 @@ export class EnhancedClient extends Client {
 	public constructor(options: ClientOptions) {
 		super(options);
 		database(this, config);
-		this.once('ready', () => loadModules('modules', this));
+		this.once('ready', () => loadFeatures('commands', 'events', this));
 		this.login(config.token);
 	}
 }
