@@ -1,0 +1,7 @@
+/* Paste this into your config.json file */
+
+{
+    "token": "",
+    "dev": "",
+    "mongoPath": "mongodb://127.0.0.1:27017/discord"
+}
