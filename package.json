@@ -1,7 +1,7 @@
 {
-  "name": "modular-discord-bot",
-  "version": "0.0.2",
-  "description": "A modular discord bot that can serve as a base for future projects.",
+  "name": "discord-base",
+  "version": "0.0.3",
+  "description": "A discord bot that can serve as a base for future projects.",
   "main": "src/index.ts",
   "scripts": {
     "start": "nodemon src/index.ts"
@@ -9,18 +9,18 @@
   "author": "Dennis#4064",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/builders": "^0.13.0",
-    "@discordjs/rest": "^0.4.1",
-    "discord-api-types": "^0.32.1",
-    "discord.js": "^13.7.0",
-    "mongoose": "^6.3.3"
+    "@discordjs/builders": "^0.15.0",
+    "@discordjs/rest": "^0.5.0",
+    "discord-api-types": "^0.33.5",
+    "discord.js": "^13.8.0",
+    "mongoose": "^6.3.6"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.23.0",
-    "@typescript-eslint/parser": "^5.23.0",
-    "eslint": "^8.15.0",
+    "@typescript-eslint/eslint-plugin": "^5.27.1",
+    "@typescript-eslint/parser": "^5.27.1",
+    "eslint": "^8.17.0",
     "nodemon": "^2.0.16",
-    "ts-node": "^10.7.0",
-    "typescript": "^4.6.4"
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
   }
 }
